@@ -4,6 +4,8 @@ from sklearn.model_selection import train_test_split
 from flask import Flask, make_response, request
 import io
 import csv
+import random
+from io import BytesIO
 import pandas as pd
 import pickle
 import sklearn.metrics as metrics
@@ -17,7 +19,8 @@ import warnings
 import statsmodels.api as sm
 from sklearn.linear_model import LogisticRegression
 from sklearn.feature_selection import RFE
-
+from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
+from matplotlib.figure import Figure
 
 @app.route('/')
 def form():
@@ -32,12 +35,34 @@ def form():
                     <input type="file" name="data_file" class="btn btn-block"/>
                     </br>
                     </br>
-                    <button type="submit" class="btn btn-primary btn-block btn-large">Pocess</button>
+                    <button type="submit" class="btn btn-primary btn-block btn-large">Download Predicted Output</button>
+                </form>
+				<form action="/transform2.png" method="post" enctype="multipart/form-data">
+					<button type="showgraph" class="btn btn-primary btn-block btn-large">Show graph</button>
                 </form>
             </body>
         </html>
     """
+@app.route('/transform2.png', methods=['POST'])
+def transform_view2():
+    fig = Figure()
+    axis = fig.add_subplot(1, 1, 1)
 
+    xs = range(100)
+    ys = [random.randint(1, 50) for x in xs]
+
+    axis.plot(xs, ys)
+    canvas = FigureCanvas(fig)
+    output = BytesIO()
+
+    # output = StringIO()  # python 2.7x
+
+    canvas.print_png(output)
+    response = make_response(output.getvalue())
+    response.mimetype = 'image/png'
+    return response
+
+	
 
 @app.route('/transform', methods=['POST'])
 def transform_view():
