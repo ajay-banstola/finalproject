@@ -1,0 +1,26 @@
+<html>
+            <head>
+                <script src="https://d3js.org/d3.v5.min.js"></script>
+            </head>
+
+            <body>
+                <h1>Data Processing</h1>
+                </br>
+                <script>
+                    d3.csv("static/Book2.csv", function(data){
+                        console.log(data)
+                    });
+                </script>
+                </br>
+                <p> Insert your CSV file and then download the Result
+                <form action="/transform" method="post" enctype="multipart/form-data">
+                    <input type="file" name="data_file" class="btn btn-block"/>
+                    </br>
+                    </br>
+                    <button type="submit" class="btn btn-primary btn-block btn-large">Download Predicted Output</button>
+                </form>
+				<form action="/transform2" method="post" enctype="multipart/form-data">
+					<button type="showgraph" class="btn btn-primary btn-block btn-large">Show graph</button>
+                </form>
+            </body>
+        </html>

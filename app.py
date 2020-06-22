@@ -1,8 +1,19 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+from matplotlib.figure import Figure
+from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
+from sklearn.feature_selection import RFE
+from sklearn.linear_model import LogisticRegression
+import statsmodels.api as sm
+import warnings
+from matplotlib.pyplot import xticks
+import seaborn as sns
+import matplotlib.pyplot as plt
+import numpy as np
 from sklearn.model_selection import train_test_split
-from flask import Flask, make_response, request
+from flask import Flask, make_response, request, render_template
 import io
+import json
 import csv
 import random
 from io import BytesIO
@@ -10,70 +21,34 @@ import pandas as pd
 import pickle
 import sklearn.metrics as metrics
 app = Flask(__name__)
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
-from matplotlib.pyplot import xticks
-import warnings
-import statsmodels.api as sm
-from sklearn.linear_model import LogisticRegression
-from sklearn.feature_selection import RFE
-from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
-from matplotlib.figure import Figure
+
 
 @app.route('/')
 def form():
-    return """
-        <html>
-            <body>
-                <h1>Data Processing</h1>
-                </br>
-                </br>
-                <p> Insert your CSV file and then download the Result
-                <form action="/transform" method="post" enctype="multipart/form-data">
-                    <input type="file" name="data_file" class="btn btn-block"/>
-                    </br>
-                    </br>
-                    <button type="submit" class="btn btn-primary btn-block btn-large">Download Predicted Output</button>
-                </form>
-				<form action="/transform2.png" method="post" enctype="multipart/form-data">
-					<button type="showgraph" class="btn btn-primary btn-block btn-large">Show graph</button>
-                </form>
-            </body>
-        </html>
-    """
-@app.route('/transform2.png', methods=['POST'])
+    return render_template("upload.html")
+
+
+@app.route('/transform2', methods=['POST'])
 def transform_view2():
-    fig = Figure()
-    axis = fig.add_subplot(1, 1, 1)
+    df = pd.read_csv('static/leads_cleaned.csv')
+    df1 = df[['row_number', 'TotalVisits', 'Converted']]
+    print(df1)
+    chart_data = df1.to_dict(orient='records')
+    chart_data = json.dumps(chart_data, indent=2)
+    data = {'chart_data': chart_data}
+    return render_template("graph.html", data=data)
 
-    xs = range(100)
-    ys = [random.randint(1, 50) for x in xs]
-
-    axis.plot(xs, ys)
-    canvas = FigureCanvas(fig)
-    output = BytesIO()
-
-    # output = StringIO()  # python 2.7x
-
-    canvas.print_png(output)
-    response = make_response(output.getvalue())
-    response.mimetype = 'image/png'
-    return response
-
-	
 
 @app.route('/transform', methods=['POST'])
 def transform_view():
 
     # copied
 
-# -*- coding: utf-8 -*-
+    # -*- coding: utf-8 -*-
 
-# In[1]:
+    # In[1]:
 
-# Supress Warnings
+    # Supress Warnings
 
     warnings.filterwarnings('ignore')
 
@@ -97,7 +72,7 @@ def transform_view():
     # In[4]:
 
     data['Lead Source'] = data['Lead Source'].replace(['google'],
-            'Google')
+                                                      'Google')
     data['Lead Source'] = data['Lead Source'].replace([
         'Click2call',
         'Live Chat',
@@ -111,7 +86,7 @@ def transform_view():
         'testone',
         'welearnblog_Home',
         'youtubechannel',
-        ], 'Others')
+    ], 'Others')
 
     # In[5]:
 
@@ -125,15 +100,15 @@ def transform_view():
         'Resubscribed to emails',
         'Email Received',
         'Email Marked Spam',
-        ], 'Other_Activity')
+    ], 'Other_Activity')
 
     # In[6]:
 
     data['Specialization'] = data['Specialization'].replace(['Others'],
-            'Other_Specialization')
+                                                            'Other_Specialization')
     data['What is your current occupation'] = \
         data['What is your current occupation'].replace(['Other'],
-            'Other_Occupation')
+                                                        'Other_Occupation')
 
     # In[7]:
 
@@ -155,7 +130,7 @@ def transform_view():
         'Recognition issue (DEC approval)',
         'Want to take admission but has financial problems',
         'University not recognized',
-        ], 'Other_Tags')
+    ], 'Other_Tags')
 
     # In[8]:
 
@@ -175,7 +150,7 @@ def transform_view():
         'I agree to pay the amount through cheque',
         'A free copy of Mastering The Interview',
         'Country',
-        ], 1)
+    ], 1)
 
     # In[9]:
 
@@ -212,7 +187,7 @@ def transform_view():
         'Lead Quality',
         'City',
         'Last Notable Activity',
-        ]], drop_first=True)
+    ]], drop_first=True)
     dummy1.head()
 
     # In[13]:
@@ -234,7 +209,7 @@ def transform_view():
         'Lead Quality',
         'City',
         'Last Notable Activity',
-        ], axis=1)
+    ], axis=1)
 
     # In[15]:
 
@@ -298,8 +273,8 @@ def transform_view():
 
     # In[55]:
 
-    final['final_predicted'] = final.Converted_prob.map(lambda x: \
-            (1 if x > 0.5 else 0))
+    final['final_predicted'] = final.Converted_prob.map(lambda x:
+                                                        (1 if x > 0.5 else 0))
 
     # In[56]:
 
@@ -313,15 +288,16 @@ def transform_view():
 
     # In[ ]:
 
-        # copied_finish
+    # copied_finish
 
-        # Send Response
+    # Send Response
 
     resp = make_response(final.to_csv())
     resp.headers['Content-Disposition'] = \
         'attachment; filename= export.csv'
     resp.headers['Content-Type'] = 'text/csv'
     return resp
+
 
 if __name__ == '__main__':
     app.run(debug=True)
