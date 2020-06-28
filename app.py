@@ -1,13 +1,24 @@
-#!/usr/bin/python
-# -*- coding: utf-8 -*-
+from flask import Flask, render_template, redirect, url_for, flash
+from flask_bootstrap import Bootstrap
+from flask_wtf import FlaskForm
+from wtforms import StringField, BooleanField, PasswordField
+from wtforms.validators import InputRequired, Email, Length
+from flask_sqlalchemy import SQLAlchemy
+from werkzeug.security import generate_password_hash, check_password_hash
+import os
+import json
+import pandas as pd
+import os.path
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from sklearn.feature_selection import RFE
 from sklearn.linear_model import LogisticRegression
-import statsmodels.api as sm
+# import statsmodels.api as sm
+from statsmodels import api as sm
 import warnings
 from matplotlib.pyplot import xticks
-import seaborn as sns
+#import seaborn as sns
 import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.model_selection import train_test_split
@@ -17,22 +28,118 @@ import json
 import csv
 import random
 from io import BytesIO
-import pandas as pd
 import pickle
 import sklearn.metrics as metrics
 app = Flask(__name__)
+app.config['SECRET_KEY'] = 'secret'
+
+db_path = os.path.join(os.path.dirname(__file__), 'database.db')
+db_uri = 'sqlite:///{}'.format(db_path)
+app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
 
 
-@app.route('/')
-def form():
-    return render_template("upload.html")
+Bootstrap(app)
 
 
-@app.route('/transform2', methods=['POST'])
+db = SQLAlchemy(app)
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
+
+
+class User(UserMixin, db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(15), unique=True)
+    email = db.Column(db.String(50), unique=True)
+    password = db.Column(db.String(80))
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
+
+
+class LoginForm(FlaskForm):
+    username = StringField('username', validators=[
+                           InputRequired(), Length(min=4, max=15)])
+    password = PasswordField('password', validators=[
+                             InputRequired(), Length(min=8, max=80)])
+    remember = BooleanField('remember me')
+
+
+class RegisterForm(FlaskForm):
+    email = StringField('email', validators=[InputRequired(), Email(
+        message='Invalid email'), Length(max=50)])
+    username = StringField('username', validators=[
+                           InputRequired(), Length(min=4, max=15)])
+    password = PasswordField('password', validators=[
+                             InputRequired(), Length(min=8, max=80)])
+
+
+@app.route('/', methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(username=form.username.data).first()
+        if user:
+            login_user(user, remember=form.remember.data)
+            if check_password_hash(user.password, form.password.data):
+                return redirect(url_for('welcome'))
+
+        return "<h1>" + "Invalid Username or password" + "</h1>"
+        # flash("Invalid Username or Password")
+
+    return render_template('login.html', form=form)
+
+
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+    form = RegisterForm()
+
+    if form.validate_on_submit():
+        hashed_password = generate_password_hash(
+            form.password.data, method='sha256')
+        # if User.query.filter_by(username=form.username.data).first() == form.username.data:
+        #    flash("Username already exits!")
+        # else:
+        new_user = User(username=form.username.data,
+                        email=form.email.data, password=hashed_password)
+        db.session.add(new_user)
+        db.session.commit()
+
+        return '<h1>New user has been created!</h1>'
+        # return '<h1>' + form.username.data + ' ' + form.email.data + ' ' + form.password.data + '</h1>'
+
+    return render_template('signup.html', form=form)
+
+
+@app.route('/welcome')
+@login_required
+def welcome():
+    return render_template('upload.html')
+
+
+@app.route('/logout', methods=['GET', 'POST'])
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('login'))
+    # return render_template('login.html')
+# copied
+
+
+@app.route('/transform2', methods=['POST', 'GET'])
 def transform_view2():
-    df = pd.read_csv('static/leads_cleaned.csv')
-    df1 = df[['row_number', 'TotalVisits', 'Converted']]
-    print(df1)
+    df = pd.read_csv(r'C:\Users\Admin\Downloads\export.csv')
+    #df = pd.read_csv(request.files.get('data_file'))
+    #resp = transform_view()
+    # print(resp)
+    #resp = resp.response
+    #resp2 = pd.DataFrame(resp)
+    # final1 = pd.read_csv(final)
+    # print(final1.columns)
+    # print(resp)
+    df1 = df[['Converted', 'Converted_prob', 'final_predicted']]
     chart_data = df1.to_dict(orient='records')
     chart_data = json.dumps(chart_data, indent=2)
     data = {'chart_data': chart_data}
@@ -65,7 +172,7 @@ def transform_view():
 
     # In[3]:
 
-    #data = pd.DataFrame(pd.read_csv('leads_cleaned.csv'))
+    #data = pd.DataFrame(pd.read_csv('static/leads_cleaned.csv'))
     data = pd.read_csv(request.files.get('data_file'))
     # data.head(2)
 
@@ -158,7 +265,7 @@ def transform_view():
 
     # In[10]:
 
-    data.head()
+    # data.head()
 
     # In[11]:
 
@@ -188,14 +295,14 @@ def transform_view():
         'City',
         'Last Notable Activity',
     ]], drop_first=True)
-    dummy1.head()
+    # dummy1.head()
 
     # In[13]:
 
     # Adding the results to the master dataframe
 
     data = pd.concat([data, dummy1], axis=1)
-    data.head()
+    # data.head()
 
     # In[14]:
 
@@ -211,14 +318,6 @@ def transform_view():
         'Last Notable Activity',
     ], axis=1)
 
-    # In[15]:
-
-    data.head()
-
-    # In[16]:
-
-    # Putting feature variable to X
-
     X = data.drop(['Prospect ID', 'Converted', 'row_number'], axis=1)
 
     # In[17]:
@@ -227,7 +326,7 @@ def transform_view():
 
     y = data['Converted']
 
-    y.head()
+    # y.head()
 
     # In[27]:
 
@@ -241,7 +340,7 @@ def transform_view():
     col1 = col.drop('Tags_invalid number', 1)
     col2 = col1.drop('Tags_wrong number given', 1)
     X_train = sm.add_constant(X[col2])
-    X_train.info()
+    # X_train.info()
 
     # In[34]:
 
@@ -249,49 +348,14 @@ def transform_view():
     y_train_pred = res.predict(X_train)
     y_train_pred = pd.DataFrame(y_train_pred)
 
-    # In[35]:
-
-    y_train_pred
-
-    # In[38]:
-
     final = pd.concat([X_train, y_train_pred, y], axis=1)
 
-    # In[39]:
-
-    final
-
-    # In[40]:
-
-    # Renaming the column
-
     final = final.rename(columns={0: 'Converted_prob'})
-
-    # In[41]:
-
-    final
-
-    # In[55]:
-
+    # final
     final['final_predicted'] = final.Converted_prob.map(lambda x:
                                                         (1 if x > 0.5 else 0))
 
-    # In[56]:
-
-    final.head()
-
-    # In[57]:
-
-    # Let's check the overall accuracy.
-
     metrics.accuracy_score(final.Converted, final.final_predicted)
-
-    # In[ ]:
-
-    # copied_finish
-
-    # Send Response
-
     resp = make_response(final.to_csv())
     resp.headers['Content-Disposition'] = \
         'attachment; filename= export.csv'

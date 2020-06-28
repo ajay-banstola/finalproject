@@ -49,21 +49,21 @@
 
     // Define the High line
     var highLine = d3.svg.line()
-        .x(function(d) { return x(d.row_number); })
-        .y(function(d) { return y(d.TotalVisits); });
+        .x(function(d) { return x(d.Converted); })
+        .y(function(d) { return y(d.Converted_prob); });
 
     var closeLine = d3.svg.line()
-        .x(function(d) { return x(d.row_number); })
-        .y(function(d) { return y(d.TotalVisits); });
+        .x(function(d) { return x(d.Converted); })
+        .y(function(d) { return y(d.Converted_prob); });
 
     var lowLine = d3.svg.line()
-        .x(function(d) { return x(d.row_number); })
+        .x(function(d) { return x(d.Converted); })
         .y(function(d) { return y(d.Converted); });
 
     var area = d3.svg.area()
-      .x(function(d) { return x(d.row_number); })
+      .x(function(d) { return x(d.Converted); })
       .y0(function(d) { return y(d.Converted); })
-      .y1(function(d) { return y(d.TotalVisits); })
+      .y1(function(d) { return y(d.Converted_prob); })
 
     // Adds the svg canvas
     var svg = d3.select("#graphDiv")
@@ -77,17 +77,17 @@
     // define function
     function draw(data) {
       data.forEach(function(d){
-        //d.row_number = parseDate(d.row_number);
-        d.TotalVisits = +d.TotalVisits;
-        d.row_number = +d.row_number;
+        //d.Converted = parseDate(d.Converted);
+        d.Converted_prob = +d.Converted_prob;
+        d.Converted = +d.Converted;
         d.Converted = +d.Converted;
       });
       // Scale the range of the data
-      x.domain(d3.extent(data, function(d) { return d.row_number; }));
+      x.domain(d3.extent(data, function(d) { return d.Converted; }));
       y.domain([d3.min(data, function(d) {
-          return Math.min(d.TotalVisits, d.TotalVisits, d.Converted) }),
+          return Math.min(d.Converted_prob, d.Converted_prob, d.Converted) }),
           d3.max(data, function(d) {
-          return Math.max(d.TotalVisits, d.TotalVisits, d.Converted) })]);
+          return Math.max(d.Converted_prob, d.Converted_prob, d.Converted) })]);
       // Add the area path.
       svg.append("path")
         .datum(data)
@@ -117,11 +117,11 @@
         .attr("class", "y axis")
         .call(yAxis);
       svg.append("text")
-        .attr("transform", "translate("+(graphWidth+3)+","+y(graphData[0].TotalVisits)+")")
+        .attr("transform", "translate("+(graphWidth+3)+","+y(graphData[0].Converted_prob)+")")
         .attr("dy", ".35em")
         .attr("text-anchor", "start")
         .style("fill", "green")
-        .text("TotalVisits");
+        .text("Converted_prob");
       svg.append("text")
         .attr("transform", "translate("+(graphWidth+3)+","+y(graphData[0].Converted)+")")
         .attr("dy", ".35em")
@@ -129,11 +129,11 @@
         .style("fill", "red")
         .text("Converted");
       svg.append("text")
-        .attr("transform", "translate("+(graphWidth+3)+","+y(graphData[0].TotalVisits)+")")
+        .attr("transform", "translate("+(graphWidth+3)+","+y(graphData[0].Converted_prob)+")")
         .attr("dy", ".35em")
         .attr("text-anchor", "start")
         .style("fill", "blue")
-        .text("TotalVisits");
+        .text("Converted_prob");
     };
 
 draw(graphData);
