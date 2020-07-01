@@ -1,0 +1,123 @@
+{% import "bootstrap/wtf.html" as wtf %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Why Choose US?</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <script src="https://kit.fontawesome.com/e40be82818.js" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='resources/css/mainpage.css') }}">
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='resources/css/index.css') }}">
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='resources/css/responsive.css') }}">
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='resources/css/animation.css') }}">
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='resources/css/card.css') }}">
+    
+  </head>
+
+  <body>
+    <div id="header">
+      <div id="header-icon">
+        <i class="fa fa-bars" onclick="headerTogger()"></i>
+      </div>
+      <div id="brand-name">Lead Predict</div>
+        
+      <div id="header-items-container" class="items">
+        
+      </div>
+       
+      <div id="log-in" class="items">
+        <a onclick="togglePopup('form-container')">Log in</a>
+      </div>
+    </div>
+    <div id="form-container" class="popup d-none">
+      <form class="form-signin" method="POST" action="/">
+      {{ form.hidden_tag() }}
+      <div id="log-in-form">
+        <p class="form-title">Log in</p>
+        <div class="form-group">
+           {{ form.username(class="form-control",required="required",type="text") }}
+          <label>Username</label>
+        </div>
+        <div class="form-group">
+           {{ form.password(class="form-control",id="password",required="required",type="password") }}
+          <label>Password</label>
+        </div>
+        <div class="form-group">
+          <button type="submit" name = "login" value ="Login" id="log-in-btn" class="submit-btn">Log in</button>
+        </div>
+        <p class="bottom-text">Don't have an account? <button onclick="changeForm()" class="change-form-btn">Register</button></p>
+       </div>
+      </form>
+    <form class="form-signin" method="POST" action="/">
+      {{ form.hidden_tag() }}
+      <div id="register-form" class="d-none">
+        <p class="form-title">Register</p>
+        <div class="form-group">
+            {{ wtf.form_field(form.username) }}
+        <label>Username</label>
+        </div>
+        <div class="form-group">
+            {{ wtf.form_field(form.email) }}
+            <label>Email</label>
+        </div>
+        <div class="form-group">
+        {{ wtf.form_field(form.password) }} 
+          <label>Password</label>
+        </div>
+        <div class="form-group">
+            <h3>{% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <h3>{{message}}</h3>
+            {% endfor %}
+        {% endif %}
+       {% endwith %}</h3>
+          <button type="submit" name = "login" value = "register" onclick = "changeForm()" id="reg-btn" class="submit-btn">Register</button>
+        </div>
+        <p class="bottom-text">Already have an account? <button onclick="changeForm()" class="change-form-btn">Log in</button></p>
+      </div>
+    </form>
+      <div class="close-form-btn" onclick="togglePopup('form-container')">
+        <i class="fas fa-times sm-icon-size"></i>
+      </div>
+    </div>
+    <div id="success-popup" class="popup d-none">
+      <i class="fas fa-check-circle lg-icon-size success-check"></i>
+      <p class="msg-text">Register Sucessfully</p>
+      <div class="close-form-btn" onclick="togglePopup('success-popup')">
+        <i class="fas fa-times sm-icon-size"></i>
+      </div>
+    </div>
+ 
+    <div id="cover">
+
+      <div class="overlay"></div>
+      <div class="cover-title"></div>
+      <div class="cover-subtitle">
+         
+        <h3>We help you determing your potential customers with a lead score. So people who really seek your service won't miss it.</h3>
+      </div>
+    </div>
+  </body>
+
+  <script src="{{url_for('static', filename='resources/js/responsive.js')}}"></script>
+  <script src="{{url_for('static', filename='resources/js/header.js')}}"></script>
+  <script src="{{url_for('static', filename='resources/js/introduction.js')}}"></script>
+  <script src="{{url_for('static', filename='resources/js/blog.js')}}"></script>
+  <script src="{{url_for('static', filename='resources/js/youtube.js')}}"></script>
+  <script src="{{url_for('static', filename='resources/js/contributor.js')}}"></script>
+  <script src="{{url_for('static', filename='resources/js/github.js')}}"></script>
+  <script src="{{url_for('static', filename='resources/js/cover.js')}}"></script>
+  <script src="{{url_for('static', filename='resources/js/register.js')}}"></script>
+  <script src="{{url_for('static', filename='resources/js/domain.js')}}"></script>
+  <script src="{{url_for('static', filename='resources/js/login.js')}}"></script>
+
+</html>

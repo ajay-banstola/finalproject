@@ -1,0 +1,279 @@
+/* Header */
+@media screen and (min-width: 720px) {
+  #header {
+    display: flex;
+  }
+
+  #header.responsive {
+    height: 80px;
+  }
+
+  #header-icon {
+    display: none;
+  }
+
+  #brand-name {
+    width: 20%;
+  }
+
+  .items {
+    display: block;
+  }
+
+  #header-items-container {
+    margin: 0px auto;
+    width: 60%;
+    text-align: end;
+  }
+
+  #header-items-container a {
+    margin: -15px 20px;
+    display: inline-block;
+    transition: 0.2s;
+  }
+
+  #header-items-container a:hover {
+    color: #ff4500;
+  }
+
+  #log-in {
+    text-align: right;
+    cursor: pointer;
+  }
+
+  #log-in a {
+    padding: 10px;
+    color: #ffffff;
+    background-color: #ff4500;
+    transition: 0.2s;
+  }
+
+  #log-in a:hover {
+    color: #000000;
+    background-color: #ffffff;
+  }
+}
+
+/* Pop-up Form */
+@media screen and (min-width: 720px) {
+  #form-container {
+    width: 500px;
+  }
+
+  #form-container .form-group .form-control {
+    width: 70%;
+  }
+
+  #success-popup {
+    width: 350px;
+    height: 200px;
+  }
+}
+
+/*Cover*/
+@media screen and (min-width: 540px) {
+  .cover-title h1 {
+    font-size: 3em;
+  }
+}
+
+@media screen and (min-width: 720px) {
+  .cover-title {
+    border-right: 4px solid #ffffff;
+  }
+
+  .cover-title h1 {
+    font-size: 4em;
+  }
+
+  .cover-subtitle {
+    height: 3em;
+  }
+
+  .cover-subtitle h3 {
+    height: 3em;
+    font-weight: 200;
+    font-size: 1.5em;
+    letter-spacing: 0em;
+    animation: slide-up 4.5s 1;
+  }
+}
+
+/* Introdution */
+@media screen and (max-width: 576px) {
+  #introduction {
+    justify-content: space-around;
+    flex-wrap: wrap;
+  }
+
+  #intro-right #slider-image {
+    height: 250px;
+  }
+}
+
+/* Blog */
+@media screen and (min-width: 320px) {
+  .card-list .card-container {
+    width: 320px;
+  }
+
+  #blog #blog-direction {
+    width: 300px;
+  }
+}
+
+/* Github */
+@media screen and (min-width: 720px) {
+  #github .card-list .card-container {
+    width: 320px;
+  }
+
+  #github .card-container .card {
+    height: auto;
+    opacity: 0.75;
+    box-shadow: 10px 10px 25px #0000000a;
+    transition: 0.2s;
+  }
+
+  #github .card-container .card:hover {
+    box-shadow: 10px 10px 30px #00000020;
+    opacity: 1;
+    transform: translateY(10px);
+    transform: scale(1.02);
+    transition: 0.2s;
+  }
+
+  #git-button:hover {
+    background-color: #f5f5f5;
+    color: #868f9b;
+    animation: shake 1s infinite;
+  }
+}
+
+/* Youtube */
+@media screen and (min-width: 320px) {
+  .card-list .card-container {
+    width: 320px;
+  }
+
+  #youtube #youtube-direction {
+    width: 300px;
+  }
+}
+
+@media screen and (min-width: 540px) {
+  #youtube #youtube-sub {
+    width: 60%;
+  }
+}
+
+/*Contributor*/
+@media screen and (min-width: 540px) {
+  .container {
+    flex-direction: column;
+    justify-content: center;
+    justify-items: center;
+    text-align: center;
+  }
+
+  .container h1 {
+    padding-top: 1em;
+    font-weight: 300;
+    font-size: 2.3em;
+  }
+
+  .people {
+    justify-content: center;
+    padding-left: 0;
+  }
+
+  .person {
+    padding: 1.5em 1em;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    justify-items: center;
+    text-align: center;
+  }
+
+  .person img {
+    width: 8em;
+    height: 8em;
+    border-radius: 50%;
+    opacity: 1;
+  }
+
+  .person .info {
+    text-align: center;
+    padding-left: 0em;
+    margin: auto;
+  }
+
+  .person .info h2 {
+    font-size: 1.2em;
+    font-weight: 200;
+  }
+}
+
+@media screen and (min-width: 720px) {
+  .people {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    justify-items: center;
+    text-align: center;
+  }
+
+  .container h1 {
+    padding-top: 1em;
+    font-weight: 300;
+    font-size: 3em;
+  }
+
+  .person {
+    padding: 2em 2em;
+    padding-bottom: 1em;
+    flex-direction: column;
+    justify-content: center;
+    justify-items: center;
+    text-align: center;
+    align-items: center;
+  }
+
+  .person img {
+    width: 9em;
+    height: 9em;
+    opacity: 0.6;
+    transition: 0.5s;
+    border-radius: 50%;
+  }
+
+  .person:hover img {
+    width: 10em;
+    height: 10em;
+    opacity: 1;
+  }
+
+  .person .info {
+    height: 4.8em;
+    padding-left: 0em;
+    margin: auto;
+    text-align: center;
+    overflow: hidden;
+    transition: 0.5s;
+  }
+
+  .person .info h2 {
+    font-size: 1.5em;
+    font-weight: 100;
+  }
+
+  .person .job {
+    margin-top: 90%;
+    transition: 0.5s;
+  }
+
+  .person:hover .job {
+    margin-top: 0;
+  }
+}

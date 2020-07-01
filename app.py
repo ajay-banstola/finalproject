@@ -18,7 +18,7 @@ from sklearn.linear_model import LogisticRegression
 from statsmodels import api as sm
 import warnings
 from matplotlib.pyplot import xticks
-#import seaborn as sns
+# import seaborn as sns
 import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.model_selection import train_test_split
@@ -77,6 +77,46 @@ class RegisterForm(FlaskForm):
 
 
 @app.route('/', methods=['GET', 'POST'])
+def index():
+    form2 = RegisterForm()
+    if request.method == "POST":
+        if request.form["login"] == "Login":
+            form = LoginForm()
+            form2 = RegisterForm()
+            if form.validate_on_submit():
+                user = User.query.filter_by(
+                    username=form.username.data).first()
+                if user:
+                    login_user(user, remember=form.remember.data)
+                    if check_password_hash(user.password, form.password.data):
+                        return redirect(url_for('welcome'))
+                flash('Invalid username or password')
+            return render_template('index.html', form=form2)
+        else:
+            form2 = RegisterForm()
+            if form2.validate_on_submit():
+                hashed_password = generate_password_hash(
+                    form2.password.data, method='sha256')
+                print(form2.username.data)
+                if User.query.filter_by(username=form2.username.data).first():
+                    flash("Username already exists!")
+                elif User.query.filter_by(email=form2.email.data).first():
+                    flash("Email already exists!")
+                else:
+                    new_user = User(username=form2.username.data,
+                                    email=form2.email.data, password=hashed_password)
+                    db.session.add(new_user)
+                    db.session.commit()
+                    # return redirect(url_for('index'))
+            # return render_template('index.html', form=form2)
+        return render_template('index.html', form=form2)
+    elif current_user.is_authenticated:
+        return render_template('upload.html')
+    else:
+        return render_template('index.html', form=form2)
+
+
+@app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
     if form.validate_on_submit():
@@ -120,10 +160,10 @@ def welcome():
 
 
 @app.route('/logout', methods=['GET', 'POST'])
-@login_required
+# @login_required
 def logout():
     logout_user()
-    return redirect(url_for('login'))
+    return redirect(url_for('index'))
     # return render_template('login.html')
 # copied
 
@@ -131,11 +171,11 @@ def logout():
 @app.route('/transform2', methods=['POST', 'GET'])
 def transform_view2():
     df = pd.read_csv(r'C:\Users\Admin\Downloads\export.csv')
-    #df = pd.read_csv(request.files.get('data_file'))
-    #resp = transform_view()
+    # df = pd.read_csv(request.files.get('data_file'))
+    # resp = transform_view()
     # print(resp)
-    #resp = resp.response
-    #resp2 = pd.DataFrame(resp)
+    # resp = resp.response
+    # resp2 = pd.DataFrame(resp)
     # final1 = pd.read_csv(final)
     # print(final1.columns)
     # print(resp)
@@ -163,7 +203,7 @@ def transform_view():
 
     # visulaisation
 
-    #get_ipython().run_line_magic('matplotlib', 'inline')
+    # get_ipython().run_line_magic('matplotlib', 'inline')
 
     # Data display coustomization
 
@@ -172,7 +212,7 @@ def transform_view():
 
     # In[3]:
 
-    #data = pd.DataFrame(pd.read_csv('static/leads_cleaned.csv'))
+    # data = pd.DataFrame(pd.read_csv('static/leads_cleaned.csv'))
     data = pd.read_csv(request.files.get('data_file'))
     # data.head(2)
 

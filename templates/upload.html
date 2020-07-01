@@ -12,6 +12,12 @@
                     });
                 </script>
                 </br>
+                <!-- current user -->
+                <p>
+                {% if current_user.is_authenticated %}
+                     Hi {{ current_user.username }}!
+                {% endif %}
+                </p>
                 <p> Insert your CSV file and then download the Result
                 <!--<form action="/transform" method="post" enctype="multipart/form-data">
                     <input type="file" name="data_file" class="btn btn-block"/>
@@ -31,6 +37,9 @@
                     <input type="file" name="data_file" class="btn btn-block"/>
                     <button  formaction = "/transform" type="submit" class="btn btn-primary btn-block btn-large">Download Predicted Output</button>
 					<button formaction = "/transform2" type="showgraph" class="btn btn-primary btn-block btn-large">Show graph</button>
-				</form>
+                    <button  formaction = "/logout" type="submit" class="btn btn-primary btn-block btn-large">Logout</button>
+
+                </form>
+
             </body>
         </html>

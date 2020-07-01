@@ -1,0 +1,52 @@
+/*Cover*/
+@keyframes blink-caret {
+  from {
+    border-right-color: #ffffff;
+  }
+  to {
+    border-right-color: transparent;
+  }
+}
+
+@keyframes slide-up {
+  0% {
+    margin-top: 5em;
+    opacity: 0;
+  }
+  70% {
+    margin-top: 2em;
+    opacity: 0.5;
+  }
+  85% {
+    opacity: 0.3;
+  }
+  100% {
+    margin-top: 0em;
+  }
+}
+
+/* Blog */
+@keyframes shake {
+  10%,
+  90% {
+    transform: translate3d(-2px, 0, 0);
+  }
+
+  20%,
+  80% {
+    transform: translate3d(2px, 0, 0);
+    opacity: 0.8;
+  }
+
+  30%,
+  50%,
+  70% {
+    transform: translate3d(-2px, 0, 0);
+  }
+
+  40%,
+  60% {
+    transform: translate3d(2px, 0, 0);
+    opacity: 1;
+  }
+}
