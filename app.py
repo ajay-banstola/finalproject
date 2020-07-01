@@ -1,15 +1,16 @@
-from flask import Flask, render_template, redirect, url_for, flash
+from flask import Flask, render_template, redirect, url_for, flash, session
 from flask_bootstrap import Bootstrap
 from flask_wtf import FlaskForm
 from wtforms import StringField, BooleanField, PasswordField
 from wtforms.validators import InputRequired, Email, Length
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
+from functools import wraps
 import os
 import json
 import pandas as pd
 import os.path
-from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
+from flask_login import LoginManager, UserMixin, login_user, logout_user, current_user
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from sklearn.feature_selection import RFE
@@ -76,6 +77,17 @@ class RegisterForm(FlaskForm):
                              InputRequired(), Length(min=8, max=80)])
 
 
+def login_required(f):
+    @wraps(f)
+    def wrap(*args, **kwargs):
+        if 'logged_in' in session:
+            return f(*args, **kwargs)
+        else:
+            flash("You need to login first")
+            return redirect(url_for('index'))
+    return wrap
+
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
     form2 = RegisterForm()
@@ -116,41 +128,41 @@ def index():
         return render_template('index.html', form=form2)
 
 
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    form = LoginForm()
-    if form.validate_on_submit():
-        user = User.query.filter_by(username=form.username.data).first()
-        if user:
-            login_user(user, remember=form.remember.data)
-            if check_password_hash(user.password, form.password.data):
-                return redirect(url_for('welcome'))
+# @app.route('/login', methods=['GET', 'POST'])
+# def login():
+#     form = LoginForm()
+#     if form.validate_on_submit():
+#         user = User.query.filter_by(username=form.username.data).first()
+#         if user:
+#             login_user(user, remember=form.remember.data)
+#             if check_password_hash(user.password, form.password.data):
+#                 return redirect(url_for('welcome'))
 
-        return "<h1>" + "Invalid Username or password" + "</h1>"
-        # flash("Invalid Username or Password")
+#         return "<h1>" + "Invalid Username or password" + "</h1>"
+#         # flash("Invalid Username or Password")
 
-    return render_template('login.html', form=form)
+#     return render_template('login.html', form=form)
 
 
-@app.route('/signup', methods=['GET', 'POST'])
-def signup():
-    form = RegisterForm()
+# @app.route('/signup', methods=['GET', 'POST'])
+# def signup():
+#     form = RegisterForm()
 
-    if form.validate_on_submit():
-        hashed_password = generate_password_hash(
-            form.password.data, method='sha256')
-        # if User.query.filter_by(username=form.username.data).first() == form.username.data:
-        #    flash("Username already exits!")
-        # else:
-        new_user = User(username=form.username.data,
-                        email=form.email.data, password=hashed_password)
-        db.session.add(new_user)
-        db.session.commit()
+#     if form.validate_on_submit():
+#         hashed_password = generate_password_hash(
+#             form.password.data, method='sha256')
+#         # if User.query.filter_by(username=form.username.data).first() == form.username.data:
+#         #    flash("Username already exits!")
+#         # else:
+#         new_user = User(username=form.username.data,
+#                         email=form.email.data, password=hashed_password)
+#         db.session.add(new_user)
+#         db.session.commit()
 
-        return '<h1>New user has been created!</h1>'
-        # return '<h1>' + form.username.data + ' ' + form.email.data + ' ' + form.password.data + '</h1>'
+#         return '<h1>New user has been created!</h1>'
+#         # return '<h1>' + form.username.data + ' ' + form.email.data + ' ' + form.password.data + '</h1>'
 
-    return render_template('signup.html', form=form)
+#     return render_template('signup.html', form=form)
 
 
 @app.route('/welcome')
