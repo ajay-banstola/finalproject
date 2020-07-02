@@ -3,141 +3,140 @@
 <head>
   <meta charset="utf-8">
   <style> /* set the CSS */
-    body { font: 12px Arial;}
-    path {
-      stroke-width: 2;
-      fill: none;
-    }
-    .axis path, .axis line {
-      fill: none;
-      stroke: grey;
-      stroke-width: 1;
-      shape-rendering: crispEdges;
-    }
-    .area {
-      fill: #F0F8FF;
-      stroke-width: 0;
-    }
+   svg {
+    font: 10px sans-serif;
+  }
+  .bar rect {
+    fill: steelblue;
+    shape-rendering: crispEdges;
+  }
+  .axis path, .axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+  }
+  .line {
+    fill: none;
+    stroke: purple;
+    stroke-width: 1.5px;
+  }
   </style>
 </head>
 <body>
-<div id='graphDiv'></div>
-
-<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="//d3js.org/d3.v3.min.js"></script>
 <script>
-    var graphData = {{ data.chart_data | safe }}
+//sample based upon: http://www.pryor.com/blog/creating-a-pareto-chart-in-excel/
+//TODO - perhaps add circle "points" on the line to match the reference sample
 
-    // Set the dimensions of the svg
-    var margin = {top: 30, right: 50, bottom: 30, left: 50};
-    var svgWidth = 600;
-    var svgHeight = 270;
-    var graphWidth = svgWidth - margin.left - margin.right;
-    var graphHeight = svgHeight - margin.top - margin.bottom;
+  //Set dimensions
+var m = {top: 50, right: 50, bottom: 50, left: 50}
+  , h = 500 - m.top - m.bottom
+  , w = 960 - m.left - m.right
+  , barWidth = 5;
 
-    // Parse the date / time
-    //var parseDate = d3.time.format("%Y-%m-%d").parse;
+var dataset = null;
 
-    // Set the ranges
-    var x = d3.time.scale().range([0, graphWidth]);
-    var y = d3.scale.linear().range([graphHeight, 0]);
+d3.csv("static/resources/leads_cleaned.csv",function(error,data){
+  if (error) return console.log(error);
 
-    // Define the axes
-    var xAxis = d3.svg.axis().scale(x)
-        .orient("bottom").ticks(5);
-    var yAxis = d3.svg.axis().scale(y)
-        .orient("left").ticks(5);
+  //typecast final_score to #, calculate total, and cumulative final_scores
+  var totalfinal_score = 0;
+  for(var i = 0; i < data.length; i++){
+    data[i].final_score = +data[i].final_score;
+    totalfinal_score += data[i].final_score;
+    if(i > 0){
+      data[i]['Cumulativefinal_score'] = data[i].final_score + data[i-1].Cumulativefinal_score;
+    }else{
+      data[i]['Cumulativefinal_score'] = data[i].final_score;
+    }
+  }
+  //now calculate cumulative % from the cumulative final_scores & total, round %
+  for(var i = 0; i < data.length; i++){
+    data[i]['CumulativePercentage'] = (data[i]['Cumulativefinal_score'] / totalfinal_score);
+    data[i]['CumulativePercentage'] = parseFloat(data[i]['CumulativePercentage'].toFixed(2));
+  }
 
-    // Define the High line
-    var highLine = d3.svg.line()
-        .x(function(d) { return x(d.Converted); })
-        .y(function(d) { return y(d.Converted_prob); });
+  dataset = data;
 
-    var closeLine = d3.svg.line()
-        .x(function(d) { return x(d.Converted); })
-        .y(function(d) { return y(d.Converted_prob); });
+  //Axes and scales
+  var xScale = d3.scale.ordinal().rangeRoundBands([0, w], 0.1);
+  xScale.domain(data.map(function(d) { return d.Country; }));
 
-    var lowLine = d3.svg.line()
-        .x(function(d) { return x(d.Converted); })
-        .y(function(d) { return y(d.Converted); });
+  var yhist = d3.scale.linear()
+                  .domain([0, d3.max(data, function(d) { return d.final_score; })])
+                  .range([h, 0]);
 
-    var area = d3.svg.area()
-      .x(function(d) { return x(d.Converted); })
-      .y0(function(d) { return y(d.Converted); })
-      .y1(function(d) { return y(d.Converted_prob); })
+  var ycum = d3.scale.linear().domain([0, 1]).range([h, 0]);
 
-    // Adds the svg canvas
-    var svg = d3.select("#graphDiv")
-      .append("svg")
-        .attr("width", svgWidth)
-        .attr("height", svgHeight)
-      .append("g")
-        .attr("transform", 
-        "translate(" + margin.left + "," + margin.top + ")")
+  var xAxis = d3.svg.axis()
+                .scale(xScale)
+                .orient('bottom');
 
-    // define function
-    function draw(data) {
-      data.forEach(function(d){
-        //d.Converted = parseDate(d.Converted);
-        d.Converted_prob = +d.Converted_prob;
-        d.Converted = +d.Converted;
-        d.Converted = +d.Converted;
-      });
-      // Scale the range of the data
-      x.domain(d3.extent(data, function(d) { return d.Converted; }));
-      y.domain([d3.min(data, function(d) {
-          return Math.min(d.Converted_prob, d.Converted_prob, d.Converted) }),
-          d3.max(data, function(d) {
-          return Math.max(d.Converted_prob, d.Converted_prob, d.Converted) })]);
-      // Add the area path.
-      svg.append("path")
-        .datum(data)
-        .attr("class", "area")
-        .attr("d", area)
-      // Add the 2 valueline paths.
-      svg.append("path")
-        .style("stroke", "green")
-        .style("fill", "none")
-        .attr("class", "line")
-        .attr("d", highLine(data));
-      svg.append("path")
-        .style("stroke", "blue")
-        .style("fill", "none")
-        .style("stroke-dasharray", ("3, 3"))
-        .attr("d", closeLine(data));
-      svg.append("path")
-        .style("stroke", "red")
-        .attr("d", lowLine(data));
-      // Add the X Axis
-      svg.append("g")
-        .attr("class", "x axis")
-        .attr("transform", "translate(0," + graphHeight + ")")
-          .call(xAxis);
-      // Add the Y Axis
-      svg.append("g")
-        .attr("class", "y axis")
-        .call(yAxis);
-      svg.append("text")
-        .attr("transform", "translate("+(graphWidth+3)+","+y(graphData[0].Converted_prob)+")")
-        .attr("dy", ".35em")
-        .attr("text-anchor", "start")
-        .style("fill", "green")
-        .text("Converted_prob");
-      svg.append("text")
-        .attr("transform", "translate("+(graphWidth+3)+","+y(graphData[0].Converted)+")")
-        .attr("dy", ".35em")
-        .attr("text-anchor", "start")
-        .style("fill", "red")
-        .text("Converted");
-      svg.append("text")
-        .attr("transform", "translate("+(graphWidth+3)+","+y(graphData[0].Converted_prob)+")")
-        .attr("dy", ".35em")
-        .attr("text-anchor", "start")
-        .style("fill", "blue")
-        .text("Converted_prob");
-    };
+  var yAxis = d3.svg.axis()
+                .scale(yhist)
+                .orient('left');
 
-draw(graphData);
+  var yAxis2 = d3.svg.axis()
+                 .scale(ycum)
+                 .orient('right');
 
+  //Draw svg
+  var svg = d3.select("body").append("svg")
+              .attr("width", w + m.left + m.right)
+              .attr("height", h + m.top + m.bottom)
+              .append("g")
+              .attr("transform", "translate(" + m.left + "," + m.top + ")");
+
+  //Draw histogram
+  var bar = svg.selectAll(".bar")
+                .data(data)
+                .enter().append("g")
+                .attr("class", "bar");
+
+  bar.append("rect")
+      .attr("x", function(d) { return xScale(d.Country); })
+      .attr("width", xScale.rangeBand())
+      .attr("y", function(d) { return yhist(d.final_score); })
+      .attr("height", function(d) { return h - yhist(d.final_score); });
+
+  //Draw CDF line
+  var guide = d3.svg.line()
+                .x(function(d) { return xScale(d.Country); })
+                .y(function(d){ return ycum(d.CumulativePercentage) })
+                .interpolate('basis');
+
+  var line = svg.append('path')
+                .datum(data)
+                .attr('d', guide)
+                .attr('class', 'line');
+
+  //Draw axes
+  svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + h + ")")
+      .call(xAxis);
+
+  svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+      .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .text("final_score");
+
+  svg.append("g")
+      .attr("class", "y axis")
+      .attr("transform", "translate(" + [w, 0] + ")")
+      .call(yAxis2)
+      .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 4)
+      .attr("dy", "-.71em")
+      .style("text-anchor", "end")
+      .text("Cumulative %");
+});
 </script>
 
 </body>

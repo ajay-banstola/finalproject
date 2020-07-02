@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, url_for, flash, session
+from flask import Flask, render_template, redirect, url_for, flash, session, send_file
 from flask_bootstrap import Bootstrap
 from flask_wtf import FlaskForm
 from wtforms import StringField, BooleanField, PasswordField
@@ -19,7 +19,7 @@ from sklearn.linear_model import LogisticRegression
 from statsmodels import api as sm
 import warnings
 from matplotlib.pyplot import xticks
-# import seaborn as sns
+import seaborn as sns
 import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.model_selection import train_test_split
@@ -33,7 +33,7 @@ import pickle
 import sklearn.metrics as metrics
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret'
-
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 db_path = os.path.join(os.path.dirname(__file__), 'database.db')
 db_uri = 'sqlite:///{}'.format(db_path)
 app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
@@ -195,7 +195,29 @@ def transform_view2():
     chart_data = df.to_dict(orient='records')
     chart_data = json.dumps(chart_data, indent=2)
     data = {'chart_data': chart_data}
-    return render_template("graph.html", data=data)
+    return render_template("graphtest.html", data=data)
+
+
+@app.route('/graph_visualization/')
+def graph_visualization():
+    fig, ax = plt.subplots()
+    df = pd.read_csv(r'C:\Users\Admin\Downloads\export.csv')
+    Country = df['City']
+    final_score = df['final_score']
+    price1 = df.iloc[:, 1]
+    price2 = df.iloc[:, 1]
+    # sns.distplot(df["final_score"])
+    # sns.distplot(df["row_number"])
+    xticks(rotation=90)
+    plt.plot(Country, price1, color='blue')
+    plt.plot(final_score, price2, color='orange')
+    plt.ylabel('Lead Quality')
+    plt.xlabel('Count')
+    canvas = FigureCanvas(fig)
+    img = BytesIO()
+    fig.savefig(img)
+    img.seek(0)
+    return send_file(img, mimetype='image/png', cache_timeout=-1)
 
 
 @app.route('/transform', methods=['POST'])
