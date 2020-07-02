@@ -225,7 +225,8 @@ def transform_view():
     # In[3]:
 
     # data = pd.DataFrame(pd.read_csv('static/leads_cleaned.csv'))
-    data = pd.read_csv(request.files.get('data_file'))
+    data1 = pd.read_csv(request.files.get('data_file'))
+    data = data1
     # data.head(2)
 
     # In[4]:
@@ -406,9 +407,9 @@ def transform_view():
     # final
     final['final_predicted'] = final.Converted_prob.map(lambda x:
                                                         (1 if x > 0.5 else 0))
-
+    data1['final_score'] = final.Converted_prob.map(lambda x: x*100)
     metrics.accuracy_score(final.Converted, final.final_predicted)
-    resp = make_response(final.to_csv())
+    resp = make_response(data1.to_csv())
     resp.headers['Content-Disposition'] = \
         'attachment; filename= export.csv'
     resp.headers['Content-Type'] = 'text/csv'
