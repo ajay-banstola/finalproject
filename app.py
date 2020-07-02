@@ -206,17 +206,16 @@ def graph_visualization():
     final_score = df['final_score']
     price1 = df.iloc[:, 1]
     price2 = df.iloc[:, 1]
-    # sns.distplot(df["final_score"])
-    # sns.distplot(df["row_number"])
+    sns.countplot(x="Lead Origin", hue="Converted", data=df)
     xticks(rotation=90)
-    plt.plot(Country, price1, color='blue')
-    plt.plot(final_score, price2, color='orange')
+    plt.tight_layout()
     plt.ylabel('Lead Quality')
-    plt.xlabel('Count')
+    plt.xlabel('Lead origin')
     canvas = FigureCanvas(fig)
     img = BytesIO()
     fig.savefig(img)
     img.seek(0)
+
     return send_file(img, mimetype='image/png', cache_timeout=-1)
 
 
