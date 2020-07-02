@@ -191,8 +191,8 @@ def transform_view2():
     # final1 = pd.read_csv(final)
     # print(final1.columns)
     # print(resp)
-    df1 = df[['Converted', 'Converted_prob', 'final_predicted']]
-    chart_data = df1.to_dict(orient='records')
+    #df1 = df[['Converted', 'Converted_prob', 'final_predicted']]
+    chart_data = df.to_dict(orient='records')
     chart_data = json.dumps(chart_data, indent=2)
     data = {'chart_data': chart_data}
     return render_template("graph.html", data=data)
