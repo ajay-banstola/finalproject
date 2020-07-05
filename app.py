@@ -216,7 +216,6 @@ def graph_visualization():
     img = BytesIO()
     fig.savefig(img)
     img.seek(0)
-
     return send_file(img, mimetype='image/png', cache_timeout=-1)
 
 
@@ -229,8 +228,25 @@ def graph_visualization2():
     # final_score = df['final_score']
     price1 = df.iloc[:, 1]
     price2 = df.iloc[:, 1]
-    # sns.countplot(x="Country", hue="Converted", data=df)
+    sns.countplot(x="Country", hue="Converted", data=df)
     sns.countplot(df.City)
+    xticks(rotation=90)
+    plt.tight_layout()
+    plt.ylabel('Count')
+    plt.xlabel('City')
+    canvas = FigureCanvas(fig)
+    img = BytesIO()
+    fig.savefig(img)
+    img.seek(0)
+
+    return send_file(img, mimetype='image/png', cache_timeout=-1)
+
+
+@app.route('/graph_visualization3/')
+def graph_visualization3():
+    fig, ax = plt.subplots()
+    df = pd.read_csv(r'C:\Users\Admin\Downloads\export.csv')
+    sns.countplot(x="Lead Origin", hue="Converted", data=df)
     xticks(rotation=90)
     plt.tight_layout()
     plt.ylabel('Count')

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <style> /* set the CSS */
-   svg {
+    svg {
     font: 10px sans-serif;
   }
   .bar rect {
@@ -23,12 +23,12 @@
   </style>
 </head>
 <body>
-<script src="//d3js.org/d3.v3.min.js"></script>
-<script>
-//sample based upon: http://www.pryor.com/blog/creating-a-pareto-chart-in-excel/
-//TODO - perhaps add circle "points" on the line to match the reference sample
+<div id='graphDiv'></div>
 
-  //Set dimensions
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script>
+    var graphData = {{ data.chart_data | safe }}
+    // define function
 var m = {top: 50, right: 50, bottom: 50, left: 50}
   , h = 500 - m.top - m.bottom
   , w = 960 - m.left - m.right
@@ -36,7 +36,7 @@ var m = {top: 50, right: 50, bottom: 50, left: 50}
 
 var dataset = null;
 
-d3.csv("static/resources/leads_cleaned.csv",function(error,data){
+d3.csv("static/export.csv",function(error,data){
   if (error) return console.log(error);
 
   //typecast final_score to #, calculate total, and cumulative final_scores
@@ -57,7 +57,7 @@ d3.csv("static/resources/leads_cleaned.csv",function(error,data){
   }
 
   dataset = data;
-
+  console.log(dataset);
   //Axes and scales
   var xScale = d3.scale.ordinal().rangeRoundBands([0, w], 0.1);
   xScale.domain(data.map(function(d) { return d.Country; }));
@@ -100,15 +100,15 @@ d3.csv("static/resources/leads_cleaned.csv",function(error,data){
       .attr("height", function(d) { return h - yhist(d.final_score); });
 
   //Draw CDF line
-  var guide = d3.svg.line()
-                .x(function(d) { return xScale(d.Country); })
-                .y(function(d){ return ycum(d.CumulativePercentage) })
-                .interpolate('basis');
+//  var guide = d3.svg.line()
+  //              .x(function(d) { return xScale(d.Country); })
+    //            .y(function(d){ return ycum(d.CumulativePercentage) })
+     //           .interpolate('basis');
 
-  var line = svg.append('path')
-                .datum(data)
-                .attr('d', guide)
-                .attr('class', 'line');
+//  var line = svg.append('path')
+  //              .datum(data)
+    //            .attr('d', guide)
+      //          .attr('class', 'line');
 
   //Draw axes
   svg.append("g")
