@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport">
+    <title>Graph test</title>
+
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='resources/css/mainpage.css') }}">
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='resources/css/index.css') }}">
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='resources/css/responsive.css') }}">
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='resources/css/animation.css') }}">
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='resources/css/card.css') }}">
+    <style>
+.click-zoom input[type=checkbox] {
+  display: none
+}
+
+.click-zoom img {
+  margin: 100px;
+  transition: transform 0.25s ease;
+  cursor: zoom-in
+}
+
+.click-zoom input[type=checkbox]:checked~img {
+  transform: scale(2);
+  cursor: zoom-out
+}
+    </style>
+</head>
+<body>
+    
+    <h3> Count plot of data according to Lead origin.</h3>
+<div class="click-zoom">
+  <label>
+    <input type="checkbox">
+    <img src = "/graph_visualization/" alt = "graph it is" height = "400" width = "800">
+  </label>
+</div>
+
+<div class="click-zoom">
+  <label>
+    <input type="checkbox">
+    <img src = "/graph_visualization2/" alt = "graph it is" height = "400" width = "800">
+  </label>
+</div>
+  
+  
+
+    <h3> Count plot of data according to cities</h3>
+
+    <img src = "/graph_visualization3/" alt = "graph it is" height = "300" width = "300">
+
+</body>
+</html>

@@ -191,32 +191,31 @@ def transform_view2():
     # final1 = pd.read_csv(final)
     # print(final1.columns)
     # print(resp)
-    #df1 = df[['Converted', 'Converted_prob', 'final_predicted']]
+    # df1 = df[['Converted', 'Converted_prob', 'final_predicted']]
     chart_data = df.to_dict(orient='records')
     chart_data = json.dumps(chart_data, indent=2)
     data = {'chart_data': chart_data}
-    return render_template("graphtest.html", data=data)
+    return render_template("test.html", data=data)
 
 
 @app.route('/graph_visualization/')
 def graph_visualization():
-    fig, ax = plt.subplots(nrows=2, ncols=2)
+    fig, ax = plt.subplots(nrows=1, ncols=2)
     df = pd.read_csv(r'C:\Users\Admin\Downloads\export.csv')
     for row in ax:
-        for col in row:
-
-            sns.barplot(x="Lead Origin",
-                          y="Converted", data=df, ax=ax[0, 0])
-            sns.barplot(x="Lead Source",
-                          y="Converted", data=df, ax=ax[0, 1])
-
-            # sns.countplot(x="Last Activity",
-            #               data=df, ax=ax[1, 0])
-            sns.barplot(x="Last Activity", y="Converted", data=df, ax=ax[1, 0])
-            sns.barplot(x="Specialization",
-                          y="Converted", data=df, ax=ax[1, 1])
-            plt.setp(col.get_xticklabels(), rotation=30,
-                     horizontalalignment='right')
+        sns.barplot(x="Lead Origin",
+                    y="Converted", data=df, ax=ax[0])
+        sns.barplot(x="Lead Source",
+                    y="Converted", data=df, ax=ax[1])
+        plt.setp(row.get_xticklabels(), rotation=30,
+                 horizontalalignment='right')
+    # # sns.countplot(x="Last Activity",
+    # #               data=df, ax=ax[1, 0])
+    # sns.barplot(x="Last Activity", y="Converted", data=df, ax=ax[1, 0])
+    # sns.barplot(x="Specialization",
+    #               y="Converted", data=df, ax=ax[1, 1])
+    plt.setp(row.get_xticklabels(), rotation=30,
+             horizontalalignment='right')
     plt.tight_layout()
     canvas = FigureCanvas(fig)
     img = BytesIO()
@@ -226,24 +225,23 @@ def graph_visualization():
     return send_file(img, mimetype='image/png', cache_timeout=-1)
 
 
-# @app.route('/graph_visualization2/')
-# def graph_visualization2():
-#     fig1, ax1 = plt.subplots()
-#     df = pd.read_csv(r'C:\Users\Admin\Downloads\export.csv')
-#     sns.countplot(x="Lead Source", hue="Converted", data=df)
-#     # sns.countplot(df.City)
-#     xticks(rotation=90)
-#     plt.tight_layout()
-#     plt.clf()
-#     # plt.ylabel('Count')
-#     # plt.xlabel('City')
-#     canvas = FigureCanvas(fig1)
-#     img1 = BytesIO()
-#     fig1.savefig(img1, format='png')
-#     # fig1.clf()
-#     img1.seek(0)
-
-#     return send_file(img1, mimetype='image/png', cache_timeout=-1)
+@app.route('/graph_visualization2/')
+def graph_visualization2():
+    fig, ax = plt.subplots(nrows=1, ncols=2)
+    df = pd.read_csv(r'C:\Users\Admin\Downloads\export.csv')
+    for row in ax:
+        sns.barplot(x="Last Activity", y="Converted", data=df, ax=ax[0])
+        sns.barplot(x="Specialization",
+                    y="Converted", data=df, ax=ax[1])
+        plt.setp(row.get_xticklabels(), rotation=30,
+                 horizontalalignment='right')
+    plt.tight_layout()
+    canvas = FigureCanvas(fig)
+    img = BytesIO()
+    fig.set_size_inches(18.5, 10.5, forward=True)
+    fig.savefig(img, format='png')
+    img.seek(0)
+    return send_file(img, mimetype='image/png', cache_timeout=-1)
 
 
 # @app.route('/graph_visualization3/')
