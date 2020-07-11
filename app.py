@@ -195,7 +195,7 @@ def transform_view2():
     chart_data = df.to_dict(orient='records')
     chart_data = json.dumps(chart_data, indent=2)
     data = {'chart_data': chart_data}
-    return render_template("test.html", data=data)
+    return render_template("graphtest.html", data=data)
 
 
 @app.route('/graph_visualization/')
@@ -231,8 +231,9 @@ def graph_visualization2():
     df = pd.read_csv(r'C:\Users\Admin\Downloads\export.csv')
     for row in ax:
         sns.barplot(x="Last Activity", y="Converted", data=df, ax=ax[0])
-        sns.barplot(x="Specialization",
-                    y="Converted", data=df, ax=ax[1])
+        # sns.barplot(x="Specialization",
+        #             y="Converted", data=df, ax=ax[1])
+        sns.countplot(x="Lead Origin", hue="Converted", data=df, ax=ax[1])
         plt.setp(row.get_xticklabels(), rotation=30,
                  horizontalalignment='right')
     plt.tight_layout()

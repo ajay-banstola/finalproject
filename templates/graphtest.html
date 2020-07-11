@@ -174,6 +174,27 @@ img {
 .ticker__item {
   margin-right: 1rem;
 }
+
+
+
+.click-zoom input[type=checkbox] {
+  display: none
+}
+
+.click-zoom img {
+  margin: 100px;
+  transition: transform 0.25s ease;
+  cursor: zoom-in
+}
+
+.click-zoom input[type=checkbox]:checked~img {
+  transform: scale(1.8);
+  cursor: zoom-out
+}
+
+admin__main {
+  scroll-behavior: smooth;
+}
     </style>
     <meta charset="UTF-8">
     <meta name="viewport">
@@ -201,10 +222,10 @@ img {
         <nav class="admin__nav">
           <ul class="menu">
             <li class="menu__item">
-              <a class="menu__link" href="#">Dashboard</a>
+              <a class="menu__link" href="#section1">Box plot 1</a>
             </li>
             <li class="menu__item">
-              <a class="menu__link" href="#">Sales</a>
+              <a class="menu__link" href="#section2">Box plot 2</a>
             </li>
           </ul>
         </nav>
@@ -218,18 +239,28 @@ img {
             </div>
             <div class="dashboard__item">
               <div class="card">
-                Dummy
+                DUMMY
               </div>
             </div>
             <div class="dashboard__item dashboard__item--full">
               <div class="card">
             <figure>  
-                <img src="https://miro.medium.com/proxy/1*83HW0O0Q60gOYDHvi17cZA.png" alt="" />
-                <figcaption>Fig.1 Graph1</figcaption>
+                <div class="click-zoom" id = "section1">
+                  <label>
+                      <input type="checkbox">
+                     <img src = "/graph_visualization/" alt = "graph it is" height = "400" width = "600">
+                  </label>
+                </div>
+                <figcaption>Box plot</figcaption>
             </figure>
             <figure>  
-                <img src="https://www.goodly.co.in/wp-content/uploads/2014/10/Total-of-Line-Chart2.gif" alt="" />
-                <figcaption>Fig.1 - Graph2</figcaption>
+               <div class="click-zoom" id = "section2">
+                  <label>
+                      <input type="checkbox">
+                     <img src = "/graph_visualization2/" alt = "graph it is" height = "400" width = "600">
+                  </label>
+                </div>
+                <figcaption>Box plot 2</figcaption>
             </figure>
             <figure>  
                 <img src="https://www.dummies.com/wp-content/uploads/418600.image0.jpg" alt="" />
