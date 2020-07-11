@@ -200,75 +200,72 @@ def transform_view2():
 
 @app.route('/graph_visualization/')
 def graph_visualization():
-    fig, ax = plt.subplots()
-    # axes[0, 1].clear()
+    fig, ax = plt.subplots(nrows=2, ncols=2)
     df = pd.read_csv(r'C:\Users\Admin\Downloads\export.csv')
-    Country = df['City']
-    final_score = df['final_score']
-    price1 = df.iloc[:, 1]
-    price2 = df.iloc[:, 1]
-    sns.countplot(x="Lead Origin", hue="Converted", data=df)
-    xticks(rotation=90)
+    for row in ax:
+        for col in row:
+
+            sns.barplot(x="Lead Origin",
+                          y="Converted", data=df, ax=ax[0, 0])
+            sns.barplot(x="Lead Source",
+                          y="Converted", data=df, ax=ax[0, 1])
+
+            # sns.countplot(x="Last Activity",
+            #               data=df, ax=ax[1, 0])
+            sns.barplot(x="Last Activity", y="Converted", data=df, ax=ax[1, 0])
+            sns.barplot(x="Specialization",
+                          y="Converted", data=df, ax=ax[1, 1])
+            plt.setp(col.get_xticklabels(), rotation=30,
+                     horizontalalignment='right')
     plt.tight_layout()
-    plt.ylabel('Converted')
-    plt.xlabel('Lead origin')
     canvas = FigureCanvas(fig)
     img = BytesIO()
-    fig.savefig(img)
+    fig.set_size_inches(18.5, 10.5, forward=True)
+    fig.savefig(img, format='png')
     img.seek(0)
     return send_file(img, mimetype='image/png', cache_timeout=-1)
 
 
-@app.route('/graph_visualization2/')
-def graph_visualization2():
-    fig, ax = plt.subplots()
-    # axes[0, 1].clear()
-    df = pd.read_csv(r'C:\Users\Admin\Downloads\export.csv')
-    # Country = df['Country']
-    # final_score = df['final_score']
-    price1 = df.iloc[:, 1]
-    price2 = df.iloc[:, 1]
-    sns.countplot(x="Country", hue="Converted", data=df)
-    sns.countplot(df.City)
-    xticks(rotation=90)
-    plt.tight_layout()
-    plt.ylabel('Count')
-    plt.xlabel('City')
-    canvas = FigureCanvas(fig)
-    img = BytesIO()
-    fig.savefig(img)
-    img.seek(0)
+# @app.route('/graph_visualization2/')
+# def graph_visualization2():
+#     fig1, ax1 = plt.subplots()
+#     df = pd.read_csv(r'C:\Users\Admin\Downloads\export.csv')
+#     sns.countplot(x="Lead Source", hue="Converted", data=df)
+#     # sns.countplot(df.City)
+#     xticks(rotation=90)
+#     plt.tight_layout()
+#     plt.clf()
+#     # plt.ylabel('Count')
+#     # plt.xlabel('City')
+#     canvas = FigureCanvas(fig1)
+#     img1 = BytesIO()
+#     fig1.savefig(img1, format='png')
+#     # fig1.clf()
+#     img1.seek(0)
 
-    return send_file(img, mimetype='image/png', cache_timeout=-1)
+#     return send_file(img1, mimetype='image/png', cache_timeout=-1)
 
 
-@app.route('/graph_visualization3/')
-def graph_visualization3():
-    fig, ax = plt.subplots()
-    df = pd.read_csv(r'C:\Users\Admin\Downloads\export.csv')
-    sns.countplot(x="Lead Origin", hue="Converted", data=df)
-    xticks(rotation=90)
-    plt.tight_layout()
-    plt.ylabel('Count')
-    plt.xlabel('City')
-    canvas = FigureCanvas(fig)
-    img = BytesIO()
-    fig.savefig(img)
-    img.seek(0)
+# @app.route('/graph_visualization3/')
+# def graph_visualization3():
+#     fig2, ax2 = plt.subplots()
+#     df = pd.read_csv(r'C:\Users\Admin\Downloads\export.csv')
+#     # sns.countplot(x="City", hue="Converted", data=df)
+#     sns.barplot(x="Last Activity", y="Converted", data=df)
+#     xticks(rotation=90)
+#     plt.tight_layout()
+#     plt.ylabel('Converted')
+#     plt.xlabel('Last Activity')
+#     canvas = FigureCanvas(fig2)
+#     img2 = BytesIO()
+#     fig2.savefig(img2, format='png')
+#     img2.seek(0)
 
-    return send_file(img, mimetype='image/png', cache_timeout=-1)
+#     return send_file(img2, mimetype='image/png', cache_timeout=-1)
 
 
 @app.route('/transform', methods=['POST'])
 def transform_view():
-
-    # copied
-
-    # -*- coding: utf-8 -*-
-
-    # In[1]:
-
-    # Supress Warnings
 
     warnings.filterwarnings('ignore')
 

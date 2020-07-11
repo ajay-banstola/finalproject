@@ -10,20 +10,31 @@
     <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='resources/css/responsive.css') }}">
     <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='resources/css/animation.css') }}">
     <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='resources/css/card.css') }}">
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='resources/css/graph.css') }}">
 </head>
 <body>
+    <header class="admin__header">
+      <a href="#" class="logo">
+        <h1>Lead Predict</h1>
+      </a>
+      <div class="toolbar">
+        <button class="btn"></button>
+        <a href="/logout" class="logout">
+          Log Out
+        </a>
+      </div>
+    </header>
     
-    <h3> Count plot of data according to Lead origin.</h3>
 
-    <img src = "/graph_visualization/" alt = "graph it is" height = "300" width = "300">
+    <img src = "/graph_visualization/" alt = "graph it is" height = "600" width = "900">
 
-    <h3> Count plot of data according to cities</h3>
+    <!--<h3> Count plot of data according to cities</h3>
 
     <img src = "/graph_visualization2/" alt = "graph it is" height = "300" width = "300">
 
     <h3> Count plot of data according to cities</h3>
 
-    <img src = "/graph_visualization3/" alt = "graph it is" height = "300" width = "300">
+    <img src = "/graph_visualization3/" alt = "graph it is" height = "300" width = "300">-->
 
 </body>
 </html>
