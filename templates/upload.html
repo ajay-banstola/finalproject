@@ -64,7 +64,8 @@
       }
       
     </style>
-    
+        <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='resources/css/graph.css') }}">
+
   </head>
 
   <body>
@@ -78,12 +79,13 @@
     <!-- </br> -->
     <!-- current user -->
     <!-- <p> -->
-                <!-- {% if current_user.is_authenticated %}
+    <!-- {% if current_user.is_authenticated %}
                      Hi {{ current_user.username }}!
                 {% endif %}
                 </p>
                 <p> Insert your CSV file and then download the Result  -->
-    <!-- <header class="admin__header">
+
+    <header class="admin__header">
       <a href="#" class="logo">
         <h1>Lead Predict</h1>
       </a>
@@ -93,10 +95,9 @@
           Log Out
         </a>
       </div>
-    </header>-->
+    </header>
     <form method="post" enctype="multipart/form-data">
       <main>
-          
         <section class="content">
           <div class="wrapper">
             <div class="file-upload">
