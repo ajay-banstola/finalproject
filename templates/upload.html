@@ -15,6 +15,40 @@
         height: 100%;
         background-color: #2590eb;
       }
+      .admin__header {
+        display: flex;
+        flex-basis: 100%;
+        grid-area: header;
+        height: 70px;
+        background-color: #fff;
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
+        position: relative;
+      }
+
+      .toolbar {
+        display: flex;
+        flex: 1;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 var(--spacing);
+      }
+
+      .logo {
+        display: flex;
+        flex: 0 0 250px;
+        height: 70px;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        margin: 0;
+        color: #fff;
+        background-color: #dc5a60;
+        font-size: 1rem;
+      }
+      
+      .logo h1 {
+        margin: 0;
+      }
 
       main {
         height: 100%;
@@ -62,10 +96,7 @@
         background-position: 0 -100%;
         color: #2590eb;
       }
-      
     </style>
-        <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='resources/css/graph.css') }}">
-
   </head>
 
   <body>
@@ -84,14 +115,13 @@
                 {% endif %}
                 </p>
                 <p> Insert your CSV file and then download the Result  -->
-
     <header class="admin__header">
       <a href="#" class="logo">
         <h1>Lead Predict</h1>
       </a>
       <div class="toolbar">
-        <button class="btn"></button>
-        <a href="/logout" class="logout">
+        <button class="btn btn--primary"></button>
+        <a href="/logout" class="logout" style="color: red;">
           Log Out
         </a>
       </div>
