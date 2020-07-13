@@ -230,7 +230,7 @@ def graph_visualization2():
     fig, ax = plt.subplots(nrows=1, ncols=2)
     df = pd.read_csv(r'C:\Users\Admin\Downloads\export.csv')
     for row in ax:
-        sns.barplot(x="Last Activity", y="Converted", data=df, ax=ax[0])
+        sns.countplot(x="Last Activity", hue="Converted", data=df, ax=ax[0])
         # sns.barplot(x="Specialization",
         #             y="Converted", data=df, ax=ax[1])
         sns.countplot(x="Lead Origin", hue="Converted", data=df, ax=ax[1])
