@@ -198,7 +198,7 @@ admin__main {
     </style>
     <meta charset="UTF-8">
     <meta name="viewport">
-    <title>Graph test</title>
+    <title>Graph</title>
     <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='resources/css/mainpage.css') }}">
     <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='resources/css/index.css') }}">
     <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='resources/css/responsive.css') }}">
@@ -222,25 +222,18 @@ admin__main {
         <nav class="admin__nav">
           <ul class="menu">
             <li class="menu__item">
-              <a class="menu__link" href="#section1">Box plot 1</a>
+              <a class="menu__link" href="#section1">Bar plot</a>
             </li>
             <li class="menu__item">
-              <a class="menu__link" href="#section2">Box plot 2</a>
+              <a class="menu__link" href="#section2">Count plot</a>
             </li>
           </ul>
         </nav>
         <main class="admin__main">
-          <h2>Dashboard</h2>
+          <h2>Visualization of the output csv file</h2>
           <div class="dashboard">
             <div class="dashboard__item">
-              <div class="card">
-                DUMMY
-              </div>
-            </div>
-            <div class="dashboard__item">
-              <div class="card">
-                DUMMY
-              </div>
+              
             </div>
             <div class="dashboard__item dashboard__item--full">
               <div class="card">
@@ -250,8 +243,9 @@ admin__main {
                       <input type="checkbox">
                      <img src = "/graph_visualization/" alt = "graph it is" height = "400" width = "600">
                   </label>
+                  <figcaption>Figure1: Bar plot of Lead origin vs Converted and Lead Source vs Converted </figcaption>
                 </div>
-                <figcaption>Box plot</figcaption>
+                
             </figure>
             <figure>  
                <div class="click-zoom" id = "section2">
@@ -259,37 +253,14 @@ admin__main {
                       <input type="checkbox">
                      <img src = "/graph_visualization2/" alt = "graph it is" height = "400" width = "600">
                   </label>
+                  <figcaption>Figure 2: Countplot of Last Activity vs Converted and Lead origin vs converted</figcaption>
                 </div>
-                <figcaption>Box plot 2</figcaption>
-            </figure>
-            <figure>  
-                <img src="https://www.dummies.com/wp-content/uploads/418600.image0.jpg" alt="" />
-                <figcaption>Fig.1 - graph3</figcaption>
-            </figure>
-            </div>
-            </div>
-            <div class="dashboard__item dashboard__item--col">
-              <div class="card">A</div>
-            </div>
-            <div class="dashboard__item dashboard__item--col">
-              <div class="card">B</div>
-            </div>
-            <div class="dashboard__item dashboard__item--col">
-              <div class="card">C</div>
-            </div>
-            <div class="dashboard__item dashboard__item--col">
-              <div class="card">D</div>
-            </div>
-          </div>
+               
         </main>
         <footer class="admin__footer">
-          <ul class="ticker">
-            <li class="ticker__item">Sales: +3.12%</li>
-            <li class="ticker__item">Dummy: +3.12</li>
-            <li class="ticker__item">Dummy: +4.12%</li>
-          </ul>
+         
           <span>
-            &copy; 2020 .
+            &copy; Customer predictive analytics
           </span>
         </footer>
       </div>
